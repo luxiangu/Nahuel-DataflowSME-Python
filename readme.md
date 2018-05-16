@@ -87,10 +87,10 @@ BigQuery and run simple queries on the result.
 
     ```shell
     $ python2.7 exercise0.py \
-        --project=nlofeudo-big-bucket-of-stuff \
+        --project=$PROJECT \
         --setup_file=./setup.py \
         --input=gs://dataflow-samples/game/gaming_data1.csv \
-        --output_dataset=dataflow_sme_python \
+        --output_dataset=BIGQUERY_DATASET \
         --output_table_name=events \
         --runner=DataflowRunner \
         --temp_location=$TEMP_FOLDER \
