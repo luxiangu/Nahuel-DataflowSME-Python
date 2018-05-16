@@ -38,11 +38,11 @@ included `Injector` program). All exercises write their output to BigQuery.
 1. Create your SME environment. Open a shell (terminal or console) and cd into your home folder. 
 There, run:
 
-```shell
-$ virtualenv dataflowsme
-$ source dataflowsme/bin/activate
-(dataflowsme) $
-```
+    ```shell
+    $ virtualenv dataflowsme
+    $ source dataflowsme/bin/activate
+    (dataflowsme) $
+    ```
 
 1. Authenticate to Google Cloud using the gcloud command and set the default credentials and 
 default project. You will need to replace YOUR-PROJECT-ID with the id of the project 
@@ -90,7 +90,7 @@ BigQuery and run simple queries on the result.
         --project=$PROJECT \
         --setup_file=./setup.py \
         --input=gs://dataflow-samples/game/gaming_data1.csv \
-        --output_dataset=BIGQUERY_DATASET \
+        --output_dataset=$BIGQUERY_DATASET \
         --output_table_name=events \
         --runner=DataflowRunner \
         --temp_location=$TEMP_FOLDER \
