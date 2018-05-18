@@ -30,14 +30,7 @@ from apache_beam.io import WriteToBigQuery
 from apache_beam.io.gcp.internal.clients.bigquery import TableSchema
 from apache_beam.io.gcp.internal.clients.bigquery import TableFieldSchema
 from apache_beam.options.pipeline_options import PipelineOptions, SetupOptions
-
-
-# Auxilliary function to define a BigQuery field
-def table_field(name, type):
-    name_field = TableFieldSchema()
-    name_field.name = name
-    name_field.type = type
-    return name_field
+from utils.table_field import table_field
 
 # Defines the schema for the BigQuery table where results will be stored
 def table_schema():

@@ -26,25 +26,7 @@
 import apache_beam
 from apache_beam.metrics import Metrics
 
-class ParseEventFn(apache_beam.DoFn):
-    """Parses each line from the input CSV file into a dictionary"""
+class ChangeMe(apache_beam.DoFn):
 
     def __init__(self):
-        self.parsed_records = Metrics.counter('ParseGameEvent', 'ParsedRecords')
-        self.parse_errors = Metrics.counter('ParseGameEvent', 'ParseErrors')
-
-    def process(self, element):
-        fields = element.split(',');
-        try:
-            yield {
-                "user": fields[0].strip(),
-                "team": fields[1].strip(),
-                "score": long(fields[2]),
-                "timestamp": long(fields[3]),
-                "timestamp_string": fields[4],
-                "event_id": fields[5]
-            }
-            self.parsed_records.inc()
-        except:
-            print "Error parsing record: " + element
-            self.parse_errors.inc()
+        return

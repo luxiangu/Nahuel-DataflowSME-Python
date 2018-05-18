@@ -71,10 +71,10 @@ you created before:
 
 Clone the github repository
 
-    ```shell
-    $ git clone https://github.com/nahuellofeudo/DataflowSME-Python.git
-    $ cd DataflowSME
-    ```
+   ```shell
+   $ git clone https://github.com/nahuellofeudo/DataflowSME-Python.git
+   $ cd DataflowSME-Python
+   ```
 
 ## Exercise 0 (prework)
 
@@ -109,5 +109,49 @@ BigQuery and run simple queries on the result.
 
     ```shell
     $ bq query --project_id=$PROJECT \
-        'select count(distinct team) from $BIGQUERY_DATASET.events;'
+        "select count(distinct team) from $BIGQUERY_DATASET.events;"
+    ```
+
+## Exercise 1
+
+**Goal**: Use Dataflow to calculate per-user scores and write them to BigQuery. 
+
+**Procedure**
+
+1.  Modify `exercise1.py`
+
+1.  Run the pipeline (using Direct runner):
+
+    ```shell
+    $ python2.7 exercise1.py \
+               --project=$PROJECT \
+               --setup_file=./setup.py \
+               --input=gs://dataflow-sme-tutorial/gaming_data0.csv \
+               --output_dataset=$BIGQUERY_DATASET \
+               --output_table_name=user_scores \
+               --runner=DirectRunner \
+               --temp_location=$TEMP_FOLDER \
+               --staging_location=$STAGING_FOLDER 
+    ```
+
+1.  Once the pipeline finishes successfully check the score for
+    'user0_AmberDingo':
+
+    ```shell
+    $ bq query --project_id=$PROJECT \
+        "select total_score from $BIGQUERY_DATASET.user_scores \
+         where user = \"user0_AmberDingo\";"
+    ```
+
+1.  Rerun the pipeline on the Dataflow service, but remove the BigQuery table
+    first:
+
+    ```shell
+    $ bq rm --project_id=$PROJECT $BIGQUERY_DATASET.user_scores
+    ```
+
+    and then execute the above `mvn` command with
+
+    ```shell
+        --runner=DataflowRunner
     ```
