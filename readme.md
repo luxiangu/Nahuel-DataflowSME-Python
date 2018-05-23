@@ -155,3 +155,34 @@ BigQuery and run simple queries on the result.
     ```shell
         --runner=DataflowRunner
     ```
+
+## Exercise 2
+
+**Goal**: Use Dataflow to calculate per-hour team scores and write them to BigQuery.
+
+**Procedure**: 
+
+1.  Modify `exercise2.py`
+
+1.  Run the pipeline:
+
+    ```shell
+    $ python2.7 exercise2.py \
+                     --project=$PROJECT \
+                     --setup_file=./setup.py \
+                     --input=gs://dataflow-sme-tutorial/gaming_data0.csv \
+                     --output_dataset=$BIGQUERY_DATASET \
+                     --output_table_name=hourly_team_scores \
+                     --runner=DataflowRunner \
+                     --temp_location=$TEMP_FOLDER \
+                     --staging_location=$STAGING_FOLDER
+    ```
+
+1.  Once the pipeline finishes successfully check the score for team
+    'AmberDingo':
+
+    ```shell
+    $ bq query --project_id=$PROJECT \
+        "select total_score from $BIGQUERY_DATASET.hourly_team_scores \
+         where team = \"AmberDingo\" and window_start = \"2017-03-18 16:00:00 UTC\";"
+    ```

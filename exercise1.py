@@ -12,7 +12,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under
 # the License.
-
 import argparse
 import sys
 
@@ -57,17 +56,17 @@ class ExtractAndSumScore(PTransform):
 
         return (game_events
 
-            # Fill in the code to:
-            # 1. Extract a tuple (String, Integer) from each event
-            #    corresponding to the given field and the score.
-            # Hint: you can use a lambda here to make your code more compact
-            | beam.Map(ChangeMe())
+                # Fill in the code to:
+                # 1. Extract a tuple (String, Integer) from each event
+                #    corresponding to the given field and the score.
+                # Hint: you can use a lambda here to make your code more compact
+                | beam.Map(ChangeMe())
 
-            # 2. Compute the sum of the scores for each key.
-            # You need to Combine Per Key all the elements for each key
-            # Python has a built-in sum function that can combine the individual values
-            | ChangeMe()
-        )
+                # 2. Compute the sum of the scores for each key.
+                # You need to Combine Per Key all the elements for each key
+                # Python has a built-in sum function that can combine the individual values
+                | ChangeMe()
+                )
         # [END EXERCISE 1]
 
 

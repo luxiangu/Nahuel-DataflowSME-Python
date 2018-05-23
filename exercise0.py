@@ -21,18 +21,20 @@
 # See README.md for details.
 #
 
-import apache_beam as beam
 import argparse
-from utils.parse_event_fn import ParseEventFn
 import sys
 
+import apache_beam as beam
 from apache_beam.io import WriteToBigQuery
 from apache_beam.io.gcp.internal.clients.bigquery import TableSchema
-from apache_beam.io.gcp.internal.clients.bigquery import TableFieldSchema
-from apache_beam.options.pipeline_options import PipelineOptions, SetupOptions
-from utils.table_field import table_field
+from apache_beam.options.pipeline_options import PipelineOptions
+from utils.parse_event_fn import ParseEventFn
+
 
 # Defines the schema for the BigQuery table where results will be stored
+from utils.table_field import table_field
+
+
 def table_schema():
     table_schema = TableSchema()
     table_schema.fields = [

@@ -23,10 +23,10 @@
 # The human-readable time string is not used here.
 #
 
-import apache_beam
+from apache_beam import DoFn
 from apache_beam.metrics import Metrics
 
-class ParseEventFn(apache_beam.DoFn):
+class ParseEventFn(DoFn):
     """Parses each line from the input CSV file into a dictionary"""
 
     def __init__(self):
