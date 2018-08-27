@@ -34,15 +34,14 @@ class ParseEventFn(DoFn):
         self.parse_errors = Metrics.counter('ParseGameEvent', 'ParseErrors')
 
     def process(self, element):
-        fields = element.split(',');
+        fields = element.split(',')
         try:
             yield {
                 "user": fields[0].strip(),
                 "team": fields[1].strip(),
                 "score": long(fields[2]),
                 "timestamp": long(fields[3]),
-                "timestamp_string": fields[4],
-                "event_id": fields[5]
+                "timestamp_string": fields[4]
             }
             self.parsed_records.inc()
         except:

@@ -81,12 +81,10 @@ class WindowedTeamScore (PTransform):
                 # WindowInto() takes a WindowFn and returns a PTransform that applies windowing to the PCollection.
                 # FixedWindows() returns a WindowFn that assigns elements to windows of a fixed number of milliseconds.
                 # Use these methods to apply fixed windows of size self.duration to the PCollection.
-                | ChangeMe()
-
+                | WindowInto(FixedWindows(self.duration))
                 # Remember the ExtractAndSumScore PTransform from Exercise 1?
                 # We parameterized it over the key field (see below). Use it here to compute the "team" scores
-                | ChangeMe()
-
+                | ExtractAndSumScore("team")
                 # [END EXERCISE 2]
                 )
 

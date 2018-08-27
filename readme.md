@@ -61,7 +61,7 @@ you created before:
     
 1. Set other environment variables
     ```shell
-    $ export STAGING_FOLDER=gs://<path of the bucket and stagins folder that you created before>
+    $ export STAGING_FOLDER=gs://<path of the bucket and staging folder that you created before>
     $ export TEMP_FOLDER=gs://<path of the bucket and temp folder that you created before>
     $ export BIGQUERY_DATASET=<name of the dataset that you created before>
     $ export USER=`whoami`
@@ -185,4 +185,98 @@ BigQuery and run simple queries on the result.
     $ bq query --project_id=$PROJECT \
         "select total_score from $BIGQUERY_DATASET.hourly_team_scores \
          where team = \"AmberDingo\" and window_start = \"2017-03-18 16:00:00 UTC\";"
+    ```
+
+## Exercise 3
+
+**Goal**: Convert the previous pipeline to run in streaming mode.
+
+First, you need to set up the injector to publish scores via PubSub.
+
+1.  Create and download a JSON key for Google Application Credentials. See
+    [instructions](https://cloud.google.com/docs/authentication/getting-started).
+    Make sure that the key's account has at least the following role:
+    * Pub/Sub --> Editor
+    
+1.  Open a second terminal window. In this terminal run the commands listed 
+in steps 2, 3 and 4 of the section "Prepare your enviroment" to set the same variables 
+as in the first terminal (you do **not** need to do step 1).
+
+1.  In the new terminal set the new credentials by running:
+
+    ```shell
+    $ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/credentials-key.json
+    ```
+
+1. Create a new topic:
+
+    ```shell
+    $ gcloud pubsub topics create game_events_$USER
+    ```
+
+1.  In the **second** terminal run the injector:
+
+    ```shell
+    $ python2.7 utils/injector.py $PROJECT game_events_$USER none
+    ```
+
+Now complete the exercise so that it runs the pipeline from Exercise 2 in either
+batch or streaming mode.
+
+**Procedure**:
+
+1.  Modify `exercise3.py`
+
+1.  Run the pipeline in batch mode:
+
+    ```shell
+    $ python2.7 exercise3.py \
+                        --project=$PROJECT \
+                        --setup_file=./setup.py \
+                        --input=gs://dataflow-sme-tutorial/gaming_data0.csv \
+                        --output_dataset=$BIGQUERY_DATASET \
+                        --output_table_name=streaming_team_scores \
+                        --runner=DataflowRunner \
+                        --temp_location=$TEMP_FOLDER \
+                        --staging_location=$STAGING_FOLDER
+    ```
+
+1.  Once the pipeline finishes successfully check the score for team
+    'AmberDingo':
+
+    ```shell
+    $ bq query --project_id=$PROJECT \
+        "select window_start, total_score from $BIGQUERY_DATASET.streaming_team_scores \
+              where team = \"AmberDingo\";""
+    ```
+ 
+1. Delete the table so that the streaming job can create a new one:
+    ```shell
+    $ bq rm streaming_team_scores
+    ```
+
+1.  Run the pipeline in streaming mode (make sure that the injector is still running first!):
+
+    ```shell
+    $ python2.7 exercise3.py \
+                        --project=$PROJECT \
+                        --setup_file=./setup.py \
+                        --topic=projects/$PROJECT/topics/game_events_$USER \
+                        --output_dataset=$BIGQUERY_DATASET \
+                        --output_table_name=streaming_team_scores \
+                        --runner=DataflowRunner \
+                        --temp_location=$TEMP_FOLDER \
+                        --staging_location=$STAGING_FOLDER \
+                        --streaming
+    ```
+ 
+ 1. Once the pipeline starts, let it run for approximately 5 to 10 minutes. Then stop (cancel) the job.
+ 
+ 1. Check the new scores. 
+ Since teams and windows are dynamically generated we can't just query for a single team so we query the whole history:
+ 
+    ```shell
+    $ bq query --project_id=$PROJECT \
+        "select team, window_start, total_score from $BIGQUERY_DATASET.streaming_team_scores \
+         order by window_start desc;"
     ```

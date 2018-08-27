@@ -56,12 +56,12 @@ class ExtractAndSumScore(PTransform):
                 # Fill in the code to:
                 # 1. Extract a tuple (user name, score) from each event
                 # Hint: Lambda functions can make this very easy
-                | ChangeMe()
+                | beam.Map(lambda r: (r["user"], r["score"]))
 
                 # 2. Compute the sum of the scores for each key.
                 # You need to Combine Per Key all the elements.
                 # Python has a built-in function (sum) that can combine the individual values.
-                | ChangeMe()
+                | beam.CombinePerKey(sum)
                 )
         # [END EXERCISE 1]
 
